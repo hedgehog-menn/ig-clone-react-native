@@ -12,13 +12,17 @@ const uploadPostSchema = Yup.object().shape({
   caption: Yup.string().max(2200, 'Caption has reached the character limit.'),
 });
 
-const FormikPostUploader = () => {
+const FormikPostUploader = ({ navigation }) => {
   const [thumbnailUrl, setThumbnailUrl] = useState(PLACEHOLDER_IMG);
 
   return (
     <Formik
       initialValues={{ caption: '', imageUrl: '' }}
-      onSubmit={(values) => console.log(values)}
+      onSubmit={(values) => {
+        console.log(values);
+        console.log('Your post was summitted successfully 🎉');
+        navigation.goBack();
+      }}
       validationSchema={uploadPostSchema}
       validateOnMount={true}
     >
@@ -46,8 +50,8 @@ const FormikPostUploader = () => {
             <View style={{ flex: 1, marginLeft: 12 }}>
               <TextInput
                 style={{ color: 'white', fontSize: 20 }}
-                placeholder='Write a caption...'
-                placeholderTextColor='gray'
+                placeholder="Write a caption..."
+                placeholderTextColor="gray"
                 multiline={true}
                 onChangeText={handleChange('caption')}
                 onBlur={handleBlur('caption')}
@@ -55,23 +59,23 @@ const FormikPostUploader = () => {
               />
             </View>
           </View>
-          <Divider width={0.2} orientation='vertical' />
+          <Divider width={0.2} orientation="vertical" />
           <TextInput
-            onChange={e => setThumbnailUrl(e.nativeEvent.text)}
+            onChange={(e) => setThumbnailUrl(e.nativeEvent.text)}
             style={{ color: 'white', fontSize: 18 }}
-            placeholder='Enter Image Url'
-            placeholderTextColor='gray'
+            placeholder="Enter Image Url"
+            placeholderTextColor="gray"
             onChangeText={handleChange('imageUrl')}
             onBlur={handleBlur('imageUrl')}
             value={values.imageUrl}
           />
           {errors.imageUrl && (
-            <Text style={{ fontSize: 10, color: 'red'}}>
+            <Text style={{ fontSize: 10, color: 'red' }}>
               {errors.imageUrl}
             </Text>
           )}
 
-          <Button onPress={handleSubmit} title='Share' disabled={!isValid} />
+          <Button onPress={handleSubmit} title="Share" disabled={!isValid} />
         </>
       )}
     </Formik>

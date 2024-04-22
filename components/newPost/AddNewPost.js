@@ -2,21 +2,23 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import FormilPostUpLoader from './FormikPostUploader';
 
-const AddNewPost = () => {
+const AddNewPost = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Header />
-      <FormilPostUpLoader />
+      <Header navigation={navigation} />
+      <FormilPostUpLoader navigation={navigation} />
     </View>
   );
 };
 
-const Header = () => {
+const Header = ({ navigation }) => {
   return (
     <View style={styles.haederContainer}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <Image
-          source={{ uri: 'https://img.icons8.com/ios-glyphs/90/FFFFFF/back.png' }}
+          source={{
+            uri: 'https://img.icons8.com/ios-glyphs/90/FFFFFF/back.png',
+          }}
           style={{ width: 30, height: 30 }}
         />
       </TouchableOpacity>
