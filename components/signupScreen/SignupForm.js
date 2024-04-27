@@ -6,7 +6,9 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
+import { firebase, db } from '../../firebase';
 
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -21,12 +23,36 @@ const SignupForm = ({ navigation }) => {
       .min(8, 'Your password has to have at least 8 characters'),
   });
 
+  const getRandomProfilePicture = async () => {
+    const response = await fetch('https://randomuser.me/api');
+    const data = await response.json();
+    return data.results[0].picture.large;
+  };
+
+  const onSignup = async (email, username, password) => {
+    try {
+      const authUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+      console.log('🔥 Firebase User Created Successful ✅', email, password);
+
+      db.collection('users').add({
+        owner_uid: authUser.user.uid,
+        username,
+        email: authUser.user.email,
+        profile_picture: await getRandomProfilePicture(),
+      });
+    } catch (error) {
+      Alert.alert('🔥 My lord...', error.message);
+    }
+  };
+
   return (
     <View style={styles.wrapper}>
       <Formik
         initialValues={{ email: '', username: '', password: '' }}
         onSubmit={(values) => {
-          console.log(values);
+          onSignup(values.email, values.username, values.password);
         }}
         validationSchema={SignupFormSchema}
         validateOnMount={true}
@@ -61,11 +87,7 @@ const SignupForm = ({ navigation }) => {
               style={[
                 styles.inputField,
                 {
-                  borderColor:
-                    values.username.length < 1 ||
-                    Validatior.validate(values.username)
-                      ? '#ccc'
-                      : 'red',
+                  borderColor: values.username.length > 2 ? '#ccc' : 'red',
                 },
               ]}
             >
@@ -86,7 +108,7 @@ const SignupForm = ({ navigation }) => {
                 styles.inputField,
                 {
                   borderColor:
-                    1 > values.password.length || values.password.length >= 6
+                    1 > values.password.length || values.password.length >= 8
                       ? '#ccc'
                       : 'red',
                 },
