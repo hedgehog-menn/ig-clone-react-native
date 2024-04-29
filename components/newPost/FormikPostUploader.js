@@ -49,6 +49,7 @@ const FormikPostUploader = ({ navigation }) => {
         user: currentLoggedInUse.username,
         profile_picture: currentLoggedInUse.profilePicture,
         owner_uid: firebase.auth().currentUser.uid,
+        owner_email: firebase.auth().currentUser.email,
         caption,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         likes: 0,
